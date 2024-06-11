@@ -97,43 +97,47 @@ app.use(
 
 app.post("/userlogin", async (req, res) => {
   try {
-    const { error, value } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
 
-    if (error) {
-      return res.status(400).json({
-        error: _.get(error, "details[0].message", "Invalid request"),
+      if (error) {
+          return res.status(400).json({
+              error: _.get(error, "details[0].message", "Invalid request"),
+          });
+      }
+
+      const user = await User.findOne({ useremail: req.body.useremail });
+      if (!user) {
+          return res.status(404).json({ error: "User not found" });
+      }
+
+      const validPassword = await bcrypt.compare(
+          req.body.userpassword,
+          user.userpassword
+      );
+      if (!validPassword) {
+          return res.status(401).json({ error: "Invalid password" });
+      }
+
+      req.session.userId = user._id;
+      req.session.userEmail = user.useremail;
+
+    
+      res.cookie("sessionId", req.session.id, { httpOnly: true });
+
+      res.status(200).json({
+          message: "You have successfully logged in"
       });
-    }
-
-    const user = await User.findOne({ useremail: req.body.useremail });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const validPassword = await bcrypt.compare(
-      req.body.userpassword,
-      user.userpassword
-    );
-    if (!validPassword) {
-      return res.status(401).json({ error: "Invalid password" });
-    }
-
-    req.session.userId = user._id;
-    req.session.userEmail = user.useremail;
-
-    res.status(200).json({
-      message: "You have successfully logged in",
-    });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+      console.log(error);
+      res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 
-app.get('/protectedRoute',authenticateUser,(req,res)=>{
-  res.send('you are  authenticated now')
-})
+app.get("/protectedRoute", authenticateUser, (req, res) => {
+  res.status(200).json({ message: "You are authenticated now" });
+  
+});
 
 app.listen(5000, () => {
   console.log("The server is running on port 5000");
