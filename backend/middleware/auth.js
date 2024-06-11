@@ -3,7 +3,7 @@
 const User = require("../models/users");
 
 const authenticateUser = async (req, res, next) => {
-  console.log(req.session,req.session.userId,req.session.userEmail);
+  
 
   if (req.session && req.session.userId && req.session.userEmail) {
       try {
