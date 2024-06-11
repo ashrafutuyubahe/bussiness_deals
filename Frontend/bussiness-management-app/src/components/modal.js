@@ -1,8 +1,9 @@
 
 
-import React from 'react';
+import React, { useRef } from 'react';
 
 const Modal = ({ isOpen, onClose }) => {
+ 
   return (
     <>
       {isOpen && (
@@ -10,7 +11,7 @@ const Modal = ({ isOpen, onClose }) => {
           <div className="modal-content">
             <button onClick={onClose}>Close</button>
             <h2>Modal Title</h2>
-            <p>This is the content of the modal.</p>
+            <p  >This is the content of the modal.</p>
           </div>
         </div>
       )}

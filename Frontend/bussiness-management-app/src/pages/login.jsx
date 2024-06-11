@@ -1,13 +1,24 @@
-import React from 'react';
+import React,{useRef, useState} from 'react';
 import facebook from './facebook.jpg'
 import google from './google.png'
 import logo from "./ASHIFY (1).png";
+import { Axios } from 'axios';
+
 
 export default function LoginForm({ onClose }) {
 
+  const {useremail,userpassword}= useState({});
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Form submitted');
+    Axios.post('http://locahost:5000',{})
+ .then((response)=>{
+  console.log(response.data);
+ })
+ 
+
+
+
   };
 
   const handleGoogleLogin = () => {
@@ -17,7 +28,8 @@ export default function LoginForm({ onClose }) {
   const handleFacebookLogin = () => {
     console.log('Facebook login clicked');
   };
-
+  const  ref= useRef(null);
+     
   return (
     <div className="modal-overlay">
       <div className="login-modal">
@@ -29,7 +41,7 @@ export default function LoginForm({ onClose }) {
             <input type="email" name="email" required />
           </div>
           <div>
-            <label>Password:</label>
+            <label  ref={ref} >Password:</label>
             <input type="password" name="password" required />
           </div>
           <button type="submit">Login</button>
