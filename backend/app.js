@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const dbconnection = require('./models/dbconnection');
 const userModel= require('./models/users');
+const bcrypt = require('b')
 
 const app = express();
 
