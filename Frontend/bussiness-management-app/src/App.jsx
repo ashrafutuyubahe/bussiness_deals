@@ -1,18 +1,30 @@
-import React from 'react'
-import {createPortal} from 'react-dom';
-import './Modal.css';
-export default function Modal({isOpen, onClose}) {
-   if(!isOpen)return null;
- return createPortal(
-   <div className='modal'>
-       <div className='modal-container'>
-           <div  className='modal-body'>
-               <p>sample modal</p>
-           </div>
-           <button onClick={onClose}>Close</button>
-       </div>
-    
-   </div>
-   , document.getElementById('modal') // this will let react-dom know that we want to render this modal outside the current React tree
- )
+import "./App.css";
+import React,{useState} from "react";
+import Navbar from "./components/navbar";
+import Footer from "./components/footer";
+import Mainpage from "./components/mainsection";
+import Modal from "./components/modal";
+
+function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <>
+      <Navbar />
+      <Mainpage />
+      <Footer />
+       <Modal isOpen={isModalOpen} onClose={closeModal} /> {/* Render the Modal component */}
+       <button onClick={openModal}>Open Modal</button> {/* Button to open the modal */}
+    </>
+  );
 }
+
+export default App;
