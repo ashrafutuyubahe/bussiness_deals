@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const _ = require("lodash");
 const session = require("express-session");
+const  authenticateUser= require('./middleware/auth');
 
 const app = express();
 
@@ -90,7 +91,7 @@ app.use(
     secret: "your_secret_key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false, maxAge: 120000 }, // Max age in milliseconds (2 minutes)
+    cookie: { secure: false, maxAge: 120000 },
   })
 );
 
@@ -128,6 +129,11 @@ app.post("/userlogin", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+app.get('/protectedRoute',authenticateUser,(req,res)=>{
+  res.send('you are  authenticated now')
+})
 
 app.listen(5000, () => {
   console.log("The server is running on port 5000");
