@@ -49,7 +49,7 @@ app.post("/reportProblem", async (req, res) => {
 });
 
 
-router.post("/", async (req, res) => {
+router.post("/registeruser", async (req, res) => {
   try {
       const { error, value } = schema.validate(req.body);
 
@@ -64,7 +64,8 @@ router.post("/", async (req, res) => {
           userpassword: hashedPassword
       });
 
-      const savedUser = await newUser.save();
+      const savedUser = await User.save();
+      
 
       res.status(201).json({
           message: "You have successfully registered.please login now",
