@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const dbconnection = require('./models/dbconnection');
-const userModel= require('./models/users');
+ const User= require('./models/users')
 const bcrypt = require('b')
 
 const app = express();
@@ -49,27 +49,35 @@ app.post("/reportProblem", async (req, res) => {
 });
 
 
-app.post("/registeruser", async (req, res) => {
-  console.log(req.body);
+router.post("/", async (req, res) => {
   try {
-    if (!req.body) {
-      return res.status(400).send("Empty request body");
-    }
+      const { error, value } = schema.validate(req.body);
 
-    const { username,userpassword, useremail } = req.body;
-    if (!sitePerformance || !loggingError || !feedbackDelay) {
-      return res.status(422).send("Missing required fields");
-    }
+      if (error) {
+          return res.status(400).json({ error: _.get(error, "details[0].message", "Invalid request") });
+      }
 
-    
+      const hashedPassword = await bcrypt.hash(req.body.userpassword, 10); 
+      const newUser = new User({
+          username: req.body.username,
+          useremail: req.body.useremail,
+          userpassword: hashedPassword
+      });
 
-    
-      
+      const savedUser = await newUser.save();
+
+      res.status(201).json({
+          message: "You have successfully registered.please login now",
+          user: _.omit(savedUser.toObject(), ["userpassword"]), 
+      });
+     
+
   } catch (error) {
-    console.error("Error:", error);
-    return res.status(500).send("Internal Server Error");
+      console.log(error);
+      res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 
 
