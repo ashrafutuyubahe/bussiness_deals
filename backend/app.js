@@ -6,7 +6,7 @@ const User = require("./models/users");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const _ = require("lodash");
-const session= require('express-session');
+const session = require("express-session");
 
 const app = express();
 
@@ -84,14 +84,13 @@ app.post("/registeruser", async (req, res) => {
   }
 });
 
-
 //session configuration
 app.use(
   session({
     secret: "your_secret_key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false, maxAge: 120000 } // Max age in milliseconds (2 minutes)
+    cookie: { secure: false, maxAge: 120000 }, // Max age in milliseconds (2 minutes)
   })
 );
 
@@ -105,13 +104,11 @@ app.post("/userlogin", async (req, res) => {
       });
     }
 
-  
     const user = await User.findOne({ useremail: req.body.useremail });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    
     const validPassword = await bcrypt.compare(
       req.body.userpassword,
       user.userpassword
@@ -120,17 +117,11 @@ app.post("/userlogin", async (req, res) => {
       return res.status(401).json({ error: "Invalid password" });
     }
 
-   
     req.session.userId = user._id;
     req.session.userEmail = user.useremail;
 
     res.status(200).json({
       message: "You have successfully logged in",
-      sessiondata:{
-       sesionid: session.userId,
-       sessionemail:session.userEmail
-
-      }
     });
   } catch (error) {
     console.log(error);
