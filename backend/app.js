@@ -2,8 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const dbconnection = require('./models/dbconnection');
- const User= require('./models/users')
-const bcrypt = require('b')
+ const User= require('./models/users');
+const bcrypt = require('bcrypt');
+const Joi = require('joi');
+const _= require('lodash');
+
+
 
 const app = express();
 
@@ -48,8 +52,13 @@ app.post("/reportProblem", async (req, res) => {
   }
 });
 
+const schema = Joi.object({
+  username: Joi.string().min(3).max(30).required(),
+  useremail: Joi.string().email().required(),
+  userpassword: Joi.string().min(4).required(),
+});
 
-router.post("/registeruser", async (req, res) => {
+app.post("/registeruser", async (req, res) => {
   try {
       const { error, value } = schema.validate(req.body);
 
@@ -64,8 +73,8 @@ router.post("/registeruser", async (req, res) => {
           userpassword: hashedPassword
       });
 
-      const savedUser = await User.save();
-      
+      const savedUser = await newUser.save();
+
 
       res.status(201).json({
           message: "You have successfully registered.please login now",
@@ -78,6 +87,38 @@ router.post("/registeruser", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+app.post('/userlogin',async(req,res)=>{
+
+  try {
+    const { error, value } = schema.validate(req.body);
+
+    if (error) {
+        return res.status(400).json({ error: _.get(error, "details[0].message", "Invalid request") });
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.userpassword, 10); 
+    const newUser = new User({
+        username: req.body.username,
+        useremail: req.body.useremail,
+        userpassword: hashedPassword
+    });
+
+    const savedUser = await newUser.save();
+
+
+    res.status(201).json({
+        message: "You have successfully logged in "
+    });
+   
+
+} catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+}
+
+})
 
 
 
