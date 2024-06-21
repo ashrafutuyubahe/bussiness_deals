@@ -21,8 +21,8 @@ function App() {
       <Navbar />
       <Mainpage />
       <Footer />
-       <Modal isOpen={isModalOpen} onClose={closeModal} /> {/* Render the Modal component */}
-       <button onClick={openModal}>Open Modal</button> {/* Button to open the modal */}
+       <Modal isOpen={isModalOpen} onClose={closeModal} /> 
+       <button onClick={openModal}>Open Modal</button> 
     </>
   );
 }
