@@ -1,11 +1,19 @@
 import React from 'react';
 import logo from "./ASHIFY (1).png";
+import axios from 'axios';
 
 export default function registerForm({ onClose }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('Form submitted');
+    axios.post('https://locahost:500/userregister', {key1: 'value1',key2: 'value2',
+    }, {headers: {'Content-Type': 'application/json'},
+    })
+      .then(response => {console.log('Response:', response.data);
+      })
+      .catch(error => {console.error('Error:', error);
+      });
   };
 
   

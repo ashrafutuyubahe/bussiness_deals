@@ -139,6 +139,9 @@ app.get("/protectedRoute", authenticateUser, (req, res) => {
   
 });
 
+
+
+
 app.listen(5000, () => {
   console.log("The server is running on port 5000");
 });
